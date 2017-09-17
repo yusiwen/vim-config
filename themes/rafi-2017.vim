@@ -76,10 +76,10 @@ let s:stl .= '%( %{badge#branch()} %)'           " Git branch name
 let s:stl .= "%4*%(%{badge#trails('WS:%s')} %)"  " Whitespace
 let s:stl .= '%(%{badge#syntax()} %)%*'           " syntax check
 let s:stl .= '%='                                 " Align to right
-let s:stl .= '%{badge#format()} %4*%*'           " File format
+let s:stl .= '%{badge#format()} %4*%*'           " File format
 let s:stl .= '%( %{&fenc} %)'                     " File encoding
-let s:stl .= '%4*%*%( %{&ft} %)'                 " File type
-let s:stl .= '%3*%2* %l/%2c%4p%% '               " Line and column
+let s:stl .= '%4*%*%( %{&ft} %)'                 " File type
+let s:stl .= '%3*%2* %l/%2c%4p%% '               " Line and column
 let s:stl .= '%{badge#indexing()}%*'              " Indexing tags indicator
 
 " Non-active Statusline {{{
