@@ -48,46 +48,51 @@ if dein#tap('denite.nvim')
 endif
 
 if dein#tap('vim-clap')
-  " nnoremap <silent><LocalLeader>f :<C-u>Clap! files<CR>
-  " nnoremap <silent><LocalLeader>b :<C-u>Clap! buffers<CR>
-  " nnoremap <silent><LocalLeader>g :<C-u>Clap! grep<CR>
-  " nnoremap <silent><LocalLeader>j :<C-u>Clap! jumps<CR>
-  " nnoremap <silent><LocalLeader>h :<C-u>Clap! help_tags<CR>
-  " nnoremap <silent><LocalLeader>t :<C-u>Clap! tags<CR>
-  " nnoremap <silent><LocalLeader>l :<C-u>Clap! loclist<CR>
-  " nnoremap <silent><LocalLeader>q :<C-u>Clap! quickfix<CR>
-  " nnoremap <silent><LocalLeader>m :<C-u>Clap! files ~/docs/books<CR>
-  " nnoremap <silent><LocalLeader>y :<C-u>Clap! yanks<CR>
-  " nnoremap <silent><LocalLeader>/ :<C-u>Clap! lines<CR>
-  " nnoremap <silent><LocalLeader>* :<C-u>Clap! lines ++query=<cword><CR>
-  " nnoremap <silent><LocalLeader>; :<C-u>Clap! command_history<CR>
+	" nnoremap <silent><LocalLeader>f :<C-u>Clap! files<CR>
+	" nnoremap <silent><LocalLeader>b :<C-u>Clap! buffers<CR>
+	" nnoremap <silent><LocalLeader>g :<C-u>Clap! grep<CR>
+	" nnoremap <silent><LocalLeader>j :<C-u>Clap! jumps<CR>
+	" nnoremap <silent><LocalLeader>h :<C-u>Clap! help_tags<CR>
+	" nnoremap <silent><LocalLeader>t :<C-u>Clap! tags<CR>
+	" nnoremap <silent><LocalLeader>l :<C-u>Clap! loclist<CR>
+	" nnoremap <silent><LocalLeader>q :<C-u>Clap! quickfix<CR>
+	" nnoremap <silent><LocalLeader>m :<C-u>Clap! files ~/docs/books<CR>
+	" nnoremap <silent><LocalLeader>y :<C-u>Clap! yanks<CR>
+	" nnoremap <silent><LocalLeader>/ :<C-u>Clap! lines<CR>
+	" nnoremap <silent><LocalLeader>* :<C-u>Clap! lines ++query=<cword><CR>
+	" nnoremap <silent><LocalLeader>; :<C-u>Clap! command_history<CR>
 
-  " nnoremap <silent><Leader>gl :<C-u>Clap! commits<CR>
-  " nnoremap <silent><Leader>gt :<C-u>Clap! tags ++query=<cword><CR>
-  " xnoremap <silent><Leader>gt :<C-u>Clap! tags ++query=@visual<CR><CR>
-  " nnoremap <silent><Leader>gf :<C-u>Clap! files ++query=<cword><CR>
-  " xnoremap <silent><Leader>gf :<C-u>Clap! files ++query=@visual<CR><CR>
-  " nnoremap <silent><Leader>gg :<C-u>Clap! grep ++query=<cword><CR>
-  " xnoremap <silent><Leader>gg :<C-u>Clap! grep ++query=@visual<CR><CR>
+	" nnoremap <silent><Leader>gl :<C-u>Clap! commits<CR>
+	" nnoremap <silent><Leader>gt :<C-u>Clap! tags ++query=<cword><CR>
+	" xnoremap <silent><Leader>gt :<C-u>Clap! tags ++query=@visual<CR><CR>
+	" nnoremap <silent><Leader>gf :<C-u>Clap! files ++query=<cword><CR>
+	" xnoremap <silent><Leader>gf :<C-u>Clap! files ++query=@visual<CR><CR>
+	" nnoremap <silent><Leader>gg :<C-u>Clap! grep ++query=<cword><CR>
+	" xnoremap <silent><Leader>gg :<C-u>Clap! grep ++query=@visual<CR><CR>
 
-  autocmd user_events FileType clap_input call s:clap_mappings()
+	autocmd user_events FileType clap_input call s:clap_mappings()
 
-  function! s:clap_mappings()
-    nnoremap <silent> <buffer> <nowait>' :call clap#handler#tab_action()<CR>
-    inoremap <silent> <buffer> <Tab>   <C-R>=clap#navigation#linewise('down')<CR>
-    inoremap <silent> <buffer> <S-Tab> <C-R>=clap#navigation#linewise('up')<CR>
-    nnoremap <silent> <buffer> <C-f> :<c-u>call clap#navigation#scroll('down')<CR>
-    nnoremap <silent> <buffer> <C-b> :<c-u>call clap#navigation#scroll('up')<CR>
+	function! s:clap_mappings()
+		nnoremap <silent> <buffer> <nowait> <Space> :call clap#handler#tab_action()<CR>
+		nnoremap <silent> <buffer> <nowait>' :call clap#handler#tab_action()<CR>
+		inoremap <silent> <buffer> <Tab>   <C-R>=clap#navigation#linewise('down')<CR>
+		inoremap <silent> <buffer> <S-Tab> <C-R>=clap#navigation#linewise('up')<CR>
+		nnoremap <silent> <buffer> <C-j> :<C-u>call clap#navigation#linewise('down')<CR>
+		nnoremap <silent> <buffer> <C-k> :<C-u>call clap#navigation#linewise('up')<CR>
+		nnoremap <silent> <buffer> <C-n> :<C-u>call clap#navigation#linewise('down')<CR>
+		nnoremap <silent> <buffer> <C-p> :<C-u>call clap#navigation#linewise('up')<CR>
+		nnoremap <silent> <buffer> <C-f> :<c-u>call clap#navigation#scroll('down')<CR>
+		nnoremap <silent> <buffer> <C-b> :<c-u>call clap#navigation#scroll('up')<CR>
 
-    nnoremap <silent> <buffer> sg  :<c-u>call clap#handler#try_open('ctrl-v')<CR>
-    nnoremap <silent> <buffer> sv  :<c-u>call clap#handler#try_open('ctrl-x')<CR>
-    nnoremap <silent> <buffer> st  :<c-u>call clap#handler#try_open('ctrl-t')<CR>
+		nnoremap <silent> <buffer> sg  :<c-u>call clap#handler#try_open('ctrl-v')<CR>
+		nnoremap <silent> <buffer> sv  :<c-u>call clap#handler#try_open('ctrl-x')<CR>
+		nnoremap <silent> <buffer> st  :<c-u>call clap#handler#try_open('ctrl-t')<CR>
 
-    nnoremap <silent> <buffer> q     :<c-u>call clap#handler#exit()<CR>
-    nnoremap <silent> <buffer> <Esc> :call clap#handler#exit()<CR>
-    inoremap <silent> <buffer> <Esc> <C-R>=clap#navigation#linewise('down')<CR><C-R>=clap#navigation#linewise('up')<CR><Esc>
-    inoremap <silent> <buffer> jj    <C-R>=clap#navigation#linewise('down')<CR><C-R>=clap#navigation#linewise('up')<CR><Esc>
-  endfunction
+		nnoremap <silent> <buffer> q     :<c-u>call clap#handler#exit()<CR>
+		nnoremap <silent> <buffer> <Esc> :call clap#handler#exit()<CR>
+		inoremap <silent> <buffer> <Esc> <C-R>=clap#navigation#linewise('down')<CR><C-R>=clap#navigation#linewise('up')<CR><Esc>
+		inoremap <silent> <buffer> jj    <C-R>=clap#navigation#linewise('down')<CR><C-R>=clap#navigation#linewise('up')<CR><Esc>
+	endfunction
 endif
 
 if dein#tap('vim-lsp')
@@ -147,23 +152,23 @@ if dein#tap('iron.nvim')
 endif
 
 if dein#tap('vim-sandwich')
-  nmap <silent> sa <Plug>(operator-sandwich-add)
-  xmap <silent> sa <Plug>(operator-sandwich-add)
-  omap <silent> sa <Plug>(operator-sandwich-g@)
-  nmap <silent> sd <Plug>(operator-sandwich-delete)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-query-a)
-  xmap <silent> sd <Plug>(operator-sandwich-delete)
-  nmap <silent> sr <Plug>(operator-sandwich-replace)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-query-a)
-  xmap <silent> sr <Plug>(operator-sandwich-replace)
-  nmap <silent> sdb <Plug>(operator-sandwich-delete)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-auto-a)
-  nmap <silent> srb <Plug>(operator-sandwich-replace)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-auto-a)
-  omap ib <Plug>(textobj-sandwich-auto-i)
-  xmap ib <Plug>(textobj-sandwich-auto-i)
-  omap ab <Plug>(textobj-sandwich-auto-a)
-  xmap ab <Plug>(textobj-sandwich-auto-a)
-  omap is <Plug>(textobj-sandwich-query-i)
-  xmap is <Plug>(textobj-sandwich-query-i)
-  omap as <Plug>(textobj-sandwich-query-a)
-  xmap as <Plug>(textobj-sandwich-query-a)
+	nmap <silent> sa <Plug>(operator-sandwich-add)
+	xmap <silent> sa <Plug>(operator-sandwich-add)
+	omap <silent> sa <Plug>(operator-sandwich-g@)
+	nmap <silent> sd <Plug>(operator-sandwich-delete)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-query-a)
+	xmap <silent> sd <Plug>(operator-sandwich-delete)
+	nmap <silent> sr <Plug>(operator-sandwich-replace)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-query-a)
+	xmap <silent> sr <Plug>(operator-sandwich-replace)
+	nmap <silent> sdb <Plug>(operator-sandwich-delete)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-auto-a)
+	nmap <silent> srb <Plug>(operator-sandwich-replace)<Plug>(operator-sandwich-release-count)<Plug>(textobj-sandwich-auto-a)
+	omap ir <Plug>(textobj-sandwich-auto-i)
+	xmap ir <Plug>(textobj-sandwich-auto-i)
+	omap ab <Plug>(textobj-sandwich-auto-a)
+	xmap ab <Plug>(textobj-sandwich-auto-a)
+	omap is <Plug>(textobj-sandwich-query-i)
+	xmap is <Plug>(textobj-sandwich-query-i)
+	omap as <Plug>(textobj-sandwich-query-a)
+	xmap as <Plug>(textobj-sandwich-query-a)
 endif
 
 if dein#tap('vim-operator-replace')
@@ -401,6 +406,18 @@ if dein#tap('caw.vim')
   endfunction
   autocmd user_events FileType * call InitCaw()
   call InitCaw()
+endif
+
+if dein#tap('fin.vim')
+	nnoremap <Leader>f :<C-u>Fin<CR>
+
+	function! InitFin() abort
+		cmap <buffer><nowait> <Tab>   <Plug>(fin-line-next)
+		cmap <buffer><nowait> <S-Tab> <Plug>(fin-line-prev)
+		cmap <buffer><nowait> <C-j>   <Plug>(fin-line-next)
+		cmap <buffer><nowait> <C-k>   <Plug>(fin-line-prev)
+	endfunction
+	autocmd user_events FileType fin call InitFin()
 endif
 
 if dein#tap('vim-textobj-function')
