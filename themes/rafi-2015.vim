@@ -5,8 +5,8 @@
 " gVim Appearance {{{
 " ---------------------------------------------------------
 if has('gui_running')
-	set guifont=PragmataPro:h17
-	set noantialias
+  set guifont=PragmataPro:h17
+  set noantialias
 endif
 " }}}
 
@@ -28,28 +28,28 @@ hi TabLineSel2      ctermfg=252 ctermbg=238 guifg=#D0D0D0 guibg=#444444
 hi TabLineSel2Shade ctermfg=238 ctermbg=236 guifg=#444444 guibg=#303030
 
 function! Tabline() abort "{{{
-	let s:tabline =
-		\ '%#TabLineSel2# %{badge#project()} '.
-		\ '%#TabLineSel2Shade#⮀'.
-		\ '%#TabLine#  '
+  let s:tabline =
+    \ '%#TabLineSel2# %{badge#project()} '.
+    \ '%#TabLineSel2Shade#⮀'.
+    \ '%#TabLine#  '
 
-	let nr = tabpagenr()
-	for i in range(tabpagenr('$'))
-		if i + 1 == nr
-			let s:tabline .=
-				\ '%#TabLineSelShade#░%#TabLineSel#'.
-				\ '%'.(i+1).'T%{badge#label('.(i+1).', "⮀")} '.
-				\ '%#TabLineAlt#⮀ '
-		else
-			let s:tabline .=
-				\ '%#TabLine# '.
-				\ '%'.(i+1).'T%{badge#label('.(i+1).', "⮀")} '.
-				\ ' '
-		endif
-	endfor
-	let s:tabline .=
-		\ '%#TabLineFill#%T%=%#TabLine#%{badge#session("[S]")}'
-	return s:tabline
+  let nr = tabpagenr()
+  for i in range(tabpagenr('$'))
+    if i + 1 == nr
+      let s:tabline .=
+        \ '%#TabLineSelShade#░%#TabLineSel#'.
+        \ '%'.(i+1).'T%{badge#label('.(i+1).', "⮀")} '.
+        \ '%#TabLineAlt#⮀ '
+    else
+      let s:tabline .=
+        \ '%#TabLine# '.
+        \ '%'.(i+1).'T%{badge#label('.(i+1).', "⮀")} '.
+        \ ' '
+    endif
+  endfor
+  let s:tabline .=
+    \ '%#TabLineFill#%T%=%#TabLine#%{badge#session("[S]")}'
+  return s:tabline
 endfunction "}}}
 
 let &tabline='%!Tabline()'
@@ -108,9 +108,9 @@ highlight User8 guifg=#ffb964 guibg=#30302c ctermfg=215 ctermbg=236
 
 " Toggle Statusline {{{
 augroup statusline
-	autocmd!
-	autocmd WinEnter,FileType,BufWinEnter,BufReadPost * let &l:statusline = s:stl
-	autocmd WinLeave * let &l:statusline = s:stl_nc
+  autocmd!
+  autocmd WinEnter,FileType,BufWinEnter,BufReadPost * let &l:statusline = s:stl
+  autocmd WinLeave * let &l:statusline = s:stl_nc
 augroup END "}}}
 
 " }}}

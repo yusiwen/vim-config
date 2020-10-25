@@ -5,17 +5,17 @@ let s:save_cpo = &cpoptions
 set cpoptions&vim
 
 let b:undo_ftplugin .= ' | setlocal spell< list< hidden< iskeyword<'
-	\ . " | execute 'nunmap <buffer> <CR>'"
-	\ . " | execute 'nunmap <buffer> <BS>'"
-	\ . " | execute 'nunmap <buffer> o'"
-	\ . " | execute 'nunmap <buffer> O'"
-	\ . " | execute 'nunmap <buffer> f'"
-	\ . " | execute 'nunmap <buffer> F'"
-	\ . " | execute 'nunmap <buffer> t'"
-	\ . " | execute 'nunmap <buffer> T'"
-	\ . " | execute 'nunmap <buffer> <leader>j'"
-	\ . " | execute 'nunmap <buffer> <leader>k'"
-	\ . " | execute 'nunmap <buffer> q'"
+  \ . " | execute 'nunmap <buffer> <CR>'"
+  \ . " | execute 'nunmap <buffer> <BS>'"
+  \ . " | execute 'nunmap <buffer> o'"
+  \ . " | execute 'nunmap <buffer> O'"
+  \ . " | execute 'nunmap <buffer> f'"
+  \ . " | execute 'nunmap <buffer> F'"
+  \ . " | execute 'nunmap <buffer> t'"
+  \ . " | execute 'nunmap <buffer> T'"
+  \ . " | execute 'nunmap <buffer> <leader>j'"
+  \ . " | execute 'nunmap <buffer> <leader>k'"
+  \ . " | execute 'nunmap <buffer> q'"
 
 setlocal nospell
 setlocal nolist
@@ -26,26 +26,26 @@ setlocal iskeyword+=-
 
 " Count tab page windows
 function! s:count_windows()
-	let l:count = 0
-	let l:tabnr = tabpagenr()
-	try
-		let l:windows = gettabinfo(l:tabnr)[0].windows
-		for l:win in l:windows
-			if getwinvar(l:win, '&filetype') !~# '^\(clap\|defx\|denite\|vista\)'
-				let l:count += 1
-			endif
-		endfor
-	catch
-		" Fallback
-		let l:count = tabpagewinnr(l:tabnr, '$')
-	endtry
-	return l:count
+  let l:count = 0
+  let l:tabnr = tabpagenr()
+  try
+    let l:windows = gettabinfo(l:tabnr)[0].windows
+    for l:win in l:windows
+      if getwinvar(l:win, '&filetype') !~# '^\(clap\|defx\|denite\|vista\)'
+        let l:count += 1
+      endif
+    endfor
+  catch
+    " Fallback
+    let l:count = tabpagewinnr(l:tabnr, '$')
+  endtry
+  return l:count
 endfunction
 
 if s:count_windows() - 1 > 1
-	wincmd K
+  wincmd K
 else
-	wincmd L
+  wincmd L
 endif
 
 " Exit help window with 'q'

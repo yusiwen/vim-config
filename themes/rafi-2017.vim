@@ -5,8 +5,8 @@
 " gVim Appearance {{{
 " ---------------------------------------------------------
 if has('gui_running')
-	set guifont=PragmataPro:h16
-	" set noantialias
+  set guifont=PragmataPro:h16
+  " set noantialias
 endif
 " }}}
 
@@ -33,32 +33,32 @@ highlight TabLineAlt       ctermfg=252 ctermbg=238 guifg=#D0D0D0 guibg=#444444
 highlight TabLineAltShade  ctermfg=238 ctermbg=236 guifg=#444444 guibg=#303030
 
 function! Tabline() abort "{{{
-	" Active project tab
-	let s:tabline =
-		\ '%#TabLineAlt# %{badge#project()} '.
-		\ '%#TabLineAltShade#▛'.
-		\ '%#TabLineFill#  '
+  " Active project tab
+  let s:tabline =
+    \ '%#TabLineAlt# %{badge#project()} '.
+    \ '%#TabLineAltShade#▛'.
+    \ '%#TabLineFill#  '
 
-	let nr = tabpagenr()
-	for i in range(tabpagenr('$'))
-		if i + 1 == nr
-			" Active tab
-			let s:tabline .=
-				\ '%#TabLineSelShade#░%#TabLineSel#'.
-				\ '%'.(i+1).'T%{badge#label('.(i+1).', "▛", "N/A")} '.
-				\ '%#TabLineFill#▞ '
-		else
-			" Normal tab
-			let s:tabline .=
-				\ '%#TabLine# '.
-				\ '%'.(i+1).'T%{badge#label('.(i+1).', "▛", "N/A")} '.
-				\ '▘ '
-		endif
-	endfor
-	" Empty space and session indicator
-	let s:tabline .=
-		\ '%#TabLineFill#%T%=%#TabLine#%{badge#session("['.fnamemodify(v:this_session, ':t:r').']")}'
-	return s:tabline
+  let nr = tabpagenr()
+  for i in range(tabpagenr('$'))
+    if i + 1 == nr
+      " Active tab
+      let s:tabline .=
+        \ '%#TabLineSelShade#░%#TabLineSel#'.
+        \ '%'.(i+1).'T%{badge#label('.(i+1).', "▛", "N/A")} '.
+        \ '%#TabLineFill#▞ '
+    else
+      " Normal tab
+      let s:tabline .=
+        \ '%#TabLine# '.
+        \ '%'.(i+1).'T%{badge#label('.(i+1).', "▛", "N/A")} '.
+        \ '▘ '
+    endif
+  endfor
+  " Empty space and session indicator
+  let s:tabline .=
+    \ '%#TabLineFill#%T%=%#TabLine#%{badge#session("['.fnamemodify(v:this_session, ':t:r').']")}'
+  return s:tabline
 endfunction "}}}
 
 let &tabline='%!Tabline()'
@@ -111,19 +111,19 @@ highlight User8 guifg=#ffb964 guibg=#30302c ctermfg=215 ctermbg=236
 " }}}
 
 let s:disable_statusline =
-	\ 'denite\|defx\|tagbar\|nerdtree\|undotree\|diff\|peekaboo\|sidemenu'
+  \ 'denite\|defx\|tagbar\|nerdtree\|undotree\|diff\|peekaboo\|sidemenu'
 
 " Toggle Statusline {{{
 augroup statusline
-	autocmd!
-	autocmd FileType,WinEnter,BufWinEnter,BufReadPost *
-		\ if &filetype !~? s:disable_statusline
-		\ | let &l:statusline = s:stl
-		\ | endif
-	autocmd WinLeave *
-		\ if &filetype !~? s:disable_statusline
-		\ | let &l:statusline = s:stl_nc
-		\ | endif
+  autocmd!
+  autocmd FileType,WinEnter,BufWinEnter,BufReadPost *
+    \ if &filetype !~? s:disable_statusline
+    \ | let &l:statusline = s:stl
+    \ | endif
+  autocmd WinLeave *
+    \ if &filetype !~? s:disable_statusline
+    \ | let &l:statusline = s:stl_nc
+    \ | endif
 augroup END "}}}
 
 " }}}
@@ -146,15 +146,15 @@ highlight CursorWord1 ctermbg=236 guibg=#30302c
 " Plugin: Defx icons and highlights {{{
 " ---------------------------------------------------------
 let g:defx_git#indicators = {
-	\ 'Modified'  : '•',
-	\ 'Staged'    : '✚',
-	\ 'Untracked' : 'ᵁ',
-	\ 'Renamed'   : '≫',
-	\ 'Unmerged'  : '≠',
-	\ 'Ignored'   : 'ⁱ',
-	\ 'Deleted'   : '✖',
-	\ 'Unknown'   : '⁇'
-	\ }
+  \ 'Modified'  : '•',
+  \ 'Staged'    : '✚',
+  \ 'Untracked' : 'ᵁ',
+  \ 'Renamed'   : '≫',
+  \ 'Unmerged'  : '≠',
+  \ 'Ignored'   : 'ⁱ',
+  \ 'Deleted'   : '✖',
+  \ 'Unknown'   : '⁇'
+  \ }
 
 highlight Defx_filename_3_Modified  ctermfg=1  guifg=#D370A3
 highlight Defx_filename_3_Staged    ctermfg=10 guifg=#A3D572
@@ -168,16 +168,16 @@ highlight def link Defx_filename_3_Unmerged Label
 " Plugin: NERDTree icons and highlights {{{
 " ---------------------------------------------------------
 let g:NERDTreeIndicatorMapCustom = {
-	\ 'Modified':  '·',
-	\ 'Staged':    '‧',
-	\ 'Untracked': '?',
-	\ 'Renamed':   '≫',
-	\ 'Unmerged':  '≠',
-	\ 'Deleted':   '✃',
-	\ 'Dirty':     '⁖',
-	\ 'Clean':     '✓',
-	\ 'Unknown':   '⁇'
-	\ }
+  \ 'Modified':  '·',
+  \ 'Staged':    '‧',
+  \ 'Untracked': '?',
+  \ 'Renamed':   '≫',
+  \ 'Unmerged':  '≠',
+  \ 'Deleted':   '✃',
+  \ 'Dirty':     '⁖',
+  \ 'Clean':     '✓',
+  \ 'Unknown':   '⁇'
+  \ }
 
 let g:NERDTreeDirArrowExpandable = '▷'
 let g:NERDTreeDirArrowCollapsible = '▼'
@@ -202,25 +202,25 @@ highlight! def link NERDTreeGitStatusDirClean DiffAdd
 highlight! def link NERDTreeGitStatusUnknown Comment
 
 function! s:NERDTreeHighlight()
-	for l:name in keys(g:NERDTreeIndicatorMapCustom)
-		let l:icon = g:NERDTreeIndicatorMapCustom[l:name]
-		if empty(l:icon)
-			continue
-		endif
-		let l:prefix = index(['Dirty', 'Clean'], l:name) > -1 ? 'Dir' : ''
-		let l:hiname = escape('NERDTreeGitStatus'.l:prefix.l:name, '~')
-		execute 'syntax match '.l:hiname.' #'.l:icon.'# containedin=NERDTreeFlags'
-	endfor
+  for l:name in keys(g:NERDTreeIndicatorMapCustom)
+    let l:icon = g:NERDTreeIndicatorMapCustom[l:name]
+    if empty(l:icon)
+      continue
+    endif
+    let l:prefix = index(['Dirty', 'Clean'], l:name) > -1 ? 'Dir' : ''
+    let l:hiname = escape('NERDTreeGitStatus'.l:prefix.l:name, '~')
+    execute 'syntax match '.l:hiname.' #'.l:icon.'# containedin=NERDTreeFlags'
+  endfor
 
-	syntax match hideBracketsInNerdTree "\]" contained conceal containedin=NERDTreeFlags
-	syntax match hideBracketsInNerdTree "\[" contained conceal containedin=NERDTreeFlags
-	" setlocal conceallevel=3
-	" setlocal concealcursor=nvic
+  syntax match hideBracketsInNerdTree "\]" contained conceal containedin=NERDTreeFlags
+  syntax match hideBracketsInNerdTree "\[" contained conceal containedin=NERDTreeFlags
+  " setlocal conceallevel=3
+  " setlocal concealcursor=nvic
 endfunction
 
 augroup nerdtree-highlights
-	autocmd!
-	autocmd FileType nerdtree call s:NERDTreeHighlight()
+  autocmd!
+  autocmd FileType nerdtree call s:NERDTreeHighlight()
 augroup END
 "}}}
 
@@ -286,15 +286,15 @@ let g:choosewin_overlay_clear_multibyte = 0
 let g:choosewin_blink_on_land = 0
 
 let g:choosewin_color_label = {
-	\ 'cterm': [ 236, 2 ], 'gui': [ '#555555', '#000000' ] }
+  \ 'cterm': [ 236, 2 ], 'gui': [ '#555555', '#000000' ] }
 let g:choosewin_color_label_current = {
-	\ 'cterm': [ 234, 220 ], 'gui': [ '#333333', '#000000' ] }
+  \ 'cterm': [ 234, 220 ], 'gui': [ '#333333', '#000000' ] }
 let g:choosewin_color_other = {
-	\ 'cterm': [ 235, 235 ], 'gui': [ '#333333' ] }
+  \ 'cterm': [ 235, 235 ], 'gui': [ '#333333' ] }
 let g:choosewin_color_overlay = {
-	\ 'cterm': [ 2, 10 ], 'gui': [ '#88A2A4' ] }
+  \ 'cterm': [ 2, 10 ], 'gui': [ '#88A2A4' ] }
 let g:choosewin_color_overlay_current = {
-	\ 'cterm': [ 72, 64 ], 'gui': [ '#7BB292' ] }
+  \ 'cterm': [ 72, 64 ], 'gui': [ '#7BB292' ] }
 " }}}
 
 " vim: set foldmethod=marker ts=2 sw=0 tw=80 noet :

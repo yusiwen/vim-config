@@ -18,12 +18,12 @@ set formatoptions+=1         " Don't break lines after a one-letter word
 set formatoptions-=t         " Don't auto-wrap text
 set formatoptions-=o         " Disable comment-continuation (normal 'o'/'O')
 if has('patch-7.3.541')
-	set formatoptions+=j       " Remove comment leader when joining lines
+  set formatoptions+=j       " Remove comment leader when joining lines
 endif
 
 if has('vim_starting')
-	set encoding=utf-8
-	scriptencoding utf-8
+  set encoding=utf-8
+  scriptencoding utf-8
 endif
 
 " What to save for views and sessions:
@@ -31,37 +31,37 @@ set viewoptions=folds,cursor,curdir,slash,unix
 set sessionoptions=curdir,help,tabpages,winsize
 
 if has('mac') && has('vim_starting')
-	let g:clipboard = {
-		\   'name': 'macOS-clipboard',
-		\   'copy': {
-		\      '+': 'pbcopy',
-		\      '*': 'pbcopy',
-		\    },
-		\   'paste': {
-		\      '+': 'pbpaste',
-		\      '*': 'pbpaste',
-		\   },
-		\   'cache_enabled': 0,
-		\ }
+  let g:clipboard = {
+    \   'name': 'macOS-clipboard',
+    \   'copy': {
+    \      '+': 'pbcopy',
+    \      '*': 'pbcopy',
+    \    },
+    \   'paste': {
+    \      '+': 'pbpaste',
+    \      '*': 'pbpaste',
+    \   },
+    \   'cache_enabled': 0,
+    \ }
 endif
 
 if has('clipboard') && has('vim_starting')
-	set clipboard& clipboard+=unnamedplus
+  set clipboard& clipboard+=unnamedplus
 endif
 
 " }}}
 " Wildmenu {{{
 " --------
 if has('wildmenu')
-	if ! has('nvim')
-		set nowildmenu
-		set wildmode=list:longest,full
-	endif
-	set wildignorecase
-	set wildignore+=.git,.hg,.svn,.stversions,*.pyc,*.spl,*.o,*.out,*~,%*
-	set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store
-	set wildignore+=**/node_modules/**,**/bower_modules/**,*/.sass-cache/*
-	set wildignore+=__pycache__,*.egg-info,.pytest_cache,.mypy_cache/**
+  if ! has('nvim')
+    set nowildmenu
+    set wildmode=list:longest,full
+  endif
+  set wildignorecase
+  set wildignore+=.git,.hg,.svn,.stversions,*.pyc,*.spl,*.o,*.out,*~,%*
+  set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store
+  set wildignore+=**/node_modules/**,**/bower_modules/**,*/.sass-cache/*
+  set wildignore+=__pycache__,*.egg-info,.pytest_cache,.mypy_cache/**
 endif
 
 " }}}
@@ -78,50 +78,50 @@ set spellfile=$VIM_PATH/spell/en.utf-8.add
 set history=2000
 
 if has('nvim') && ! has('win32') && ! has('win64')
-	set shada=!,'300,<50,@100,s10,h
+  set shada=!,'300,<50,@100,s10,h
 else
-	set viminfo='300,<10,@50,h,n$DATA_PATH/viminfo
+  set viminfo='300,<10,@50,h,n$DATA_PATH/viminfo
 endif
 
 augroup user_persistent_undo
-	autocmd!
-	au BufWritePre /tmp/*          setlocal noundofile
-	au BufWritePre COMMIT_EDITMSG  setlocal noundofile
-	au BufWritePre MERGE_MSG       setlocal noundofile
-	au BufWritePre *.tmp           setlocal noundofile
-	au BufWritePre *.bak           setlocal noundofile
+  autocmd!
+  au BufWritePre /tmp/*          setlocal noundofile
+  au BufWritePre COMMIT_EDITMSG  setlocal noundofile
+  au BufWritePre MERGE_MSG       setlocal noundofile
+  au BufWritePre *.tmp           setlocal noundofile
+  au BufWritePre *.bak           setlocal noundofile
 augroup END
 
 " If sudo, disable vim swap/backup/undo/shada/viminfo writing
 if $SUDO_USER !=# '' && $USER !=# $SUDO_USER
-		\ && $HOME !=# expand('~'.$USER, 1)
-		\ && $HOME ==# expand('~'.$SUDO_USER, 1)
+    \ && $HOME !=# expand('~'.$USER, 1)
+    \ && $HOME ==# expand('~'.$SUDO_USER, 1)
 
-	set noswapfile
-	set nobackup
-	set nowritebackup
-	set noundofile
-	if has('nvim')
-		set shada="NONE"
-	else
-		set viminfo="NONE"
-	endif
+  set noswapfile
+  set nobackup
+  set nowritebackup
+  set noundofile
+  if has('nvim')
+    set shada="NONE"
+  else
+    set viminfo="NONE"
+  endif
 endif
 
 " Secure sensitive information, disable backup files in temp directories
 if exists('&backupskip')
-	set backupskip+=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*
-	set backupskip+=.vault.vim
+  set backupskip+=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*
+  set backupskip+=.vault.vim
 endif
 
 " Disable swap/undo/viminfo files in temp directories or shm
 augroup user_secure
-	autocmd!
-	silent! autocmd BufNewFile,BufReadPre
-		\ /tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim
-		\ setlocal noswapfile noundofile
-		\ | set nobackup nowritebackup
-		\ | if has('nvim') | set shada= | else | set viminfo= | endif
+  autocmd!
+  silent! autocmd BufNewFile,BufReadPre
+    \ /tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*/shm/*,/private/var/*,.vault.vim
+    \ setlocal noswapfile noundofile
+    \ | set nobackup nowritebackup
+    \ | if has('nvim') | set shada= | else | set viminfo= | endif
 augroup END
 
 " }}}
@@ -138,7 +138,7 @@ set autoindent      " Use same indenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
 
 if exists('&breakindent')
-	set breakindentopt=shift:2,min:20
+  set breakindentopt=shift:2,min:20
 endif
 
 " }}}
@@ -162,17 +162,17 @@ set wrapscan      " Searches wrap around the end of the file
 set complete=.,w,b,k  " C-n completion: Scan buffers, windows and dictionary
 
 if exists('+inccommand')
-	set inccommand=nosplit
+  set inccommand=nosplit
 endif
 
 if executable('rg')
-	set grepformat=%f:%l:%c:%m
-	let &grepprg =
-		\ 'rg --hidden --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
+  set grepformat=%f:%l:%c:%m
+  let &grepprg =
+    \ 'rg --hidden --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
 elseif executable('ag')
-	set grepformat=%f:%l:%c:%m
-	let &grepprg =
-		\ 'ag --hidden --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
+  set grepformat=%f:%l:%c:%m
+  let &grepprg =
+    \ 'ag --hidden --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
 endif
 
 " }}}
@@ -190,27 +190,27 @@ set diffopt=filler,iwhite       " Diff mode: show fillers, ignore whitespace
 set completeopt=menuone         " Always show menu, even for one item
 
 if has('patch-7.4.775')
-	set completeopt+=noselect       " Do not select a match in the menu
+  set completeopt+=noselect       " Do not select a match in the menu
 endif
 
 if exists('+completepopup')
-	set completeopt+=popup
-	set completepopup=height:4,width:60,highlight:InfoPopup
+  set completeopt+=popup
+  set completepopup=height:4,width:60,highlight:InfoPopup
 endif
 
 if has('patch-7.4.775')
-	" Do not insert any text for a match until the user selects from menu
-	set completeopt+=noinsert
+  " Do not insert any text for a match until the user selects from menu
+  set completeopt+=noinsert
 endif
 
 if has('patch-8.1.0360') || has('nvim-0.5')
-	set diffopt+=internal,algorithm:patience
-	" set diffopt=indent-heuristic,algorithm:patience
+  set diffopt+=internal,algorithm:patience
+  " set diffopt=indent-heuristic,algorithm:patience
 endif
 
 " Use the new Neovim :h jumplist-stack
 if has('nvim-0.5')
-	set jumpoptions=stack
+  set jumpoptions=stack
 endif
 
 " }}}
@@ -242,15 +242,15 @@ set colorcolumn=+0      " Column highlight at textwidth's max character-limit
 set display=lastline
 
 if has('folding') && has('vim_starting')
-	set foldenable
-	set foldmethod=indent
-	set foldlevelstart=99
+  set foldenable
+  set foldmethod=indent
+  set foldlevelstart=99
 endif
 
 if has('nvim-0.4')
-	set signcolumn=auto:1
+  set signcolumn=auto:1
 elseif exists('&signcolumn')
-	set signcolumn=auto
+  set signcolumn=auto
 endif
 
 " UI Symbols
@@ -261,13 +261,13 @@ set listchars=tab:\▏\ ,extends:⟫,precedes:⟪,nbsp:␣,trail:·
 " set fillchars=vert:▉,fold:─
 
 if has('patch-7.4.314')
-	" Do not display completion messages
-	set shortmess+=c
+  " Do not display completion messages
+  set shortmess+=c
 endif
 
 if has('patch-7.4.1570')
-	" Do not display message when editing files
-	set shortmess+=F
+  " Do not display message when editing files
+  set shortmess+=F
 endif
 
 " if exists('+previewpopup')
@@ -276,12 +276,12 @@ endif
 
 " Pseudo-transparency for completion menu and floating windows
 if has('termguicolors') && &termguicolors
-	if exists('&pumblend')
-		set pumblend=10
-	endif
-	if exists('&winblend')
-		set winblend=10
-	endif
+  if exists('&pumblend')
+    set pumblend=10
+  endif
+  if exists('&winblend')
+    set winblend=10
+  endif
 endif
 
 " }}}

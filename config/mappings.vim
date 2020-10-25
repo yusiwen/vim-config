@@ -5,11 +5,11 @@
 " ----------
 if get(g:, 'elite_mode')
 
-	" Disable arrow movement, resize splits instead.
-	nnoremap <silent><Up>    :resize +1<CR>
-	nnoremap <silent><Down>  :resize -1<CR>
-	nnoremap <silent><Left>  :vertical resize +1<CR>
-	nnoremap <silent><Right> :vertical resize -1<CR>
+  " Disable arrow movement, resize splits instead.
+  nnoremap <silent><Up>    :resize +1<CR>
+  nnoremap <silent><Down>  :resize -1<CR>
+  nnoremap <silent><Left>  :vertical resize +1<CR>
+  nnoremap <silent><Right> :vertical resize -1<CR>
 
 endif
 
@@ -165,10 +165,10 @@ xnoremap <C-r> :<C-u>call <SID>get_selection('/')<CR>:%s/\V<C-R>=@/<CR>//gc<Left
 
 " Returns visually selected text
 function! s:get_selection(cmdtype) "{{{
-	let temp = @s
-	normal! gv"sy
-	let @/ = substitute(escape(@s, '\'.a:cmdtype), '\n', '\\n', 'g')
-	let @s = temp
+  let temp = @s
+  normal! gv"sy
+  let @/ = substitute(escape(@s, '\'.a:cmdtype), '\n', '\\n', 'g')
+  let @s = temp
 endfunction "}}}
 
 " }}}
@@ -224,7 +224,7 @@ nmap <Leader>th :nohlsearch<CR>
 
 " Smart wrap toggle (breakindent and colorcolumn toggle as-well)
 nmap <Leader>tw :execute('setlocal wrap! breakindent! colorcolumn=' .
-	\ (&colorcolumn == '' ? &textwidth : ''))<CR>
+  \ (&colorcolumn == '' ? &textwidth : ''))<CR>
 
 " Tabs
 nnoremap <silent> g1 :<C-u>tabfirst<CR>
@@ -241,9 +241,9 @@ nnoremap <silent> <A-}> :<C-u>+tabmove<CR>
 
 " Show vim syntax highlight groups for character under cursor
 nmap <silent> <Leader>h
-	\ :echo 'hi<'.synIDattr(synID(line('.'), col('.'), 1), 'name')
-	\ . '> trans<'.synIDattr(synID(line('.'), col('.'), 0), 'name') . '> lo<'
-	\ . synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') . '>'<CR>
+  \ :echo 'hi<'.synIDattr(synID(line('.'), col('.'), 1), 'name')
+  \ . '> trans<'.synIDattr(synID(line('.'), col('.'), 0), 'name') . '> lo<'
+  \ . synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') . '>'<CR>
 
 " }}}
 " Custom Tools {{{
@@ -251,12 +251,12 @@ nmap <silent> <Leader>h
 
 " Terminal
 if exists(':tnoremap')
-	if has('nvim')
-		tnoremap   jj         <C-\><C-n>
-	else
-		tnoremap   <ESC><ESC>  <C-w>N
-		tnoremap   jj          <C-w>N
-	endif
+  if has('nvim')
+    tnoremap   jj         <C-\><C-n>
+  else
+    tnoremap   <ESC><ESC>  <C-w>N
+    tnoremap   jj          <C-w>N
+  endif
 endif
 
 " Source line and selection in vim
@@ -265,7 +265,7 @@ nnoremap <Leader>S ^vg_y:execute @@<CR>:echo 'Sourced line.'<CR>
 
 " Context-aware action-menu, neovim only (see plugin/actionmenu.vim)
 if has('nvim')
-	nmap <silent> <LocalLeader>c :<C-u>ActionMenu<CR>
+  nmap <silent> <LocalLeader>c :<C-u>ActionMenu<CR>
 endif
 
 " Session management shortcuts (see plugin/sessions.vim)
@@ -277,15 +277,15 @@ nnoremap g<C-i> :<C-u>call JumpBuffer(-1)<CR>
 nnoremap g<C-o> :<C-u>call JumpBuffer(1)<CR>
 
 if has('mac')
-	" Open the macOS dictionary on current word
-	nmap <Leader>? :!open dict://<cword><CR>
+  " Open the macOS dictionary on current word
+  nmap <Leader>? :!open dict://<cword><CR>
 
-	" Use Marked for real-time Markdown preview
-	"
-	if executable('/Applications/Marked 2.app/Contents/MacOS/Marked 2')
-		autocmd user_events FileType markdown
-			\ nmap <buffer><Leader>P :silent !open -a Marked\ 2.app '%:p'<CR>
-	endif
+  " Use Marked for real-time Markdown preview
+  "
+  if executable('/Applications/Marked 2.app/Contents/MacOS/Marked 2')
+    autocmd user_events FileType markdown
+      \ nmap <buffer><Leader>P :silent !open -a Marked\ 2.app '%:p'<CR>
+  endif
 endif
 
 nnoremap <silent> <Leader>ml :call <SID>append_modeline()<CR>
@@ -293,10 +293,10 @@ nnoremap <silent> <Leader>ml :call <SID>append_modeline()<CR>
 " Append modeline after last line in buffer
 " See: http://vim.wikia.com/wiki/Modeline_magic
 function! s:append_modeline() "{{{
-	let l:modeline = printf(' vim: set ts=%d sw=%d tw=%d %set :',
-				\ &tabstop, &shiftwidth, &textwidth, &expandtab ? '' : 'no')
-	let l:modeline = substitute(&commentstring, '%s', l:modeline, '')
-	call append(line('$'), l:modeline)
+  let l:modeline = printf(' vim: set ts=%d sw=%d tw=%d %set :',
+        \ &tabstop, &shiftwidth, &textwidth, &expandtab ? '' : 'no')
+  let l:modeline = substitute(&commentstring, '%s', l:modeline, '')
+  call append(line('$'), l:modeline)
 endfunction "}}}
 
 " }}}
@@ -305,9 +305,9 @@ endfunction "}}}
 
 " Ultimatus Quitos
 autocmd user_events BufWinEnter,BufNew *
-	\ if &buftype == '' && ! mapcheck('q', 'n')
-	\ |   nnoremap <silent><buffer> q :<C-u>quit<CR>
-	\ | endif
+  \ if &buftype == '' && ! mapcheck('q', 'n')
+  \ |   nnoremap <silent><buffer> q :<C-u>quit<CR>
+  \ | endif
 
 nnoremap <C-q> <C-w>
 nnoremap <C-x> <C-w>x
@@ -335,61 +335,61 @@ nmap <silent> [Window]- :<c-u>call <SID>toggle_contrast(-v:count1)<cr>
 nmap <silent> [Window]= :<c-u>call <SID>toggle_contrast(+v:count1)<cr>
 
 function! s:toggle_background()
-	if ! exists('g:colors_name')
-		echomsg 'No colorscheme set'
-		return
-	endif
-	let l:scheme = g:colors_name
+  if ! exists('g:colors_name')
+    echomsg 'No colorscheme set'
+    return
+  endif
+  let l:scheme = g:colors_name
 
-	if l:scheme =~# 'dark' || l:scheme =~# 'light'
-		" Rotate between different theme backgrounds
-		execute 'colorscheme' (l:scheme =~# 'dark'
-					\ ? substitute(l:scheme, 'dark', 'light', '')
-					\ : substitute(l:scheme, 'light', 'dark', ''))
-	else
-		execute 'set background='.(&background ==# 'dark' ? 'light' : 'dark')
-		if ! exists('g:colors_name')
-			execute 'colorscheme' l:scheme
-			echomsg 'The colorscheme `'.l:scheme
-				\ .'` doesn''t have background variants!'
-		else
-			echo 'Set colorscheme to '.&background.' mode'
-		endif
-	endif
+  if l:scheme =~# 'dark' || l:scheme =~# 'light'
+    " Rotate between different theme backgrounds
+    execute 'colorscheme' (l:scheme =~# 'dark'
+          \ ? substitute(l:scheme, 'dark', 'light', '')
+          \ : substitute(l:scheme, 'light', 'dark', ''))
+  else
+    execute 'set background='.(&background ==# 'dark' ? 'light' : 'dark')
+    if ! exists('g:colors_name')
+      execute 'colorscheme' l:scheme
+      echomsg 'The colorscheme `'.l:scheme
+        \ .'` doesn''t have background variants!'
+    else
+      echo 'Set colorscheme to '.&background.' mode'
+    endif
+  endif
 endfunction
 
 function! s:toggle_contrast(delta)
-	let l:scheme = ''
-	if g:colors_name =~# 'solarized8'
-		let l:schemes = map(['_low', '_flat', '', '_high'],
-			\ '"solarized8_".(&background).v:val')
-		let l:contrast = ((a:delta + index(l:schemes, g:colors_name)) % 4 + 4) % 4
-		let l:scheme = l:schemes[l:contrast]
-	endif
-	if l:scheme !=# ''
-		execute 'colorscheme' l:scheme
-	endif
+  let l:scheme = ''
+  if g:colors_name =~# 'solarized8'
+    let l:schemes = map(['_low', '_flat', '', '_high'],
+      \ '"solarized8_".(&background).v:val')
+    let l:contrast = ((a:delta + index(l:schemes, g:colors_name)) % 4 + 4) % 4
+    let l:scheme = l:schemes[l:contrast]
+  endif
+  if l:scheme !=# ''
+    execute 'colorscheme' l:scheme
+  endif
 endfunction
 
 function! s:window_empty_buffer()
-	let l:current = bufnr('%')
-	if ! getbufvar(l:current, '&modified')
-		enew
-		silent! execute 'bdelete '.l:current
-	endif
+  let l:current = bufnr('%')
+  if ! getbufvar(l:current, '&modified')
+    enew
+    silent! execute 'bdelete '.l:current
+  endif
 endfunction
 
 " Simple zoom toggle
 function! s:zoom()
-	if exists('t:zoomed')
-		unlet t:zoomed
-		wincmd =
-	else
-		let t:zoomed = { 'nr': bufnr('%') }
-		vertical resize
-		resize
-		normal! ze
-	endif
+  if exists('t:zoomed')
+    unlet t:zoomed
+    wincmd =
+  else
+    let t:zoomed = { 'nr': bufnr('%') }
+    vertical resize
+    resize
+    normal! ze
+  endif
 endfunction
 " }}}
 

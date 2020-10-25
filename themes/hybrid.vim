@@ -5,9 +5,9 @@
 " gVim Appearance {{{
 " ---
 if has('gui_running')
-	set guifont=PragmataPro:h16
-	set guioptions=Mc
-	" set noantialias
+  set guifont=PragmataPro:h16
+  set guioptions=Mc
+  " set noantialias
 endif
 " }}}
 
@@ -77,11 +77,11 @@ highlight! WarningMsg  ctermfg=100 guifg=#CCC566
 " endif
 
 if has('nvim')
-	highlight TermCursor    gui=NONE guibg=#cc22a0
-	highlight TermCursorNC  gui=NONE guibg=#666666
-	highlight TermCursor    gui=NONE guibg=#cc22a0
-	highlight TermCursorNC  gui=NONE guibg=#666666
-	" highlight NormalNC      gui=NONE guibg=#2c2c2c guifg=#bfbfbf
+  highlight TermCursor    gui=NONE guibg=#cc22a0
+  highlight TermCursorNC  gui=NONE guibg=#666666
+  highlight TermCursor    gui=NONE guibg=#cc22a0
+  highlight TermCursorNC  gui=NONE guibg=#666666
+  " highlight NormalNC      gui=NONE guibg=#2c2c2c guifg=#bfbfbf
 endif
 
 highlight! link vimFunc Function
@@ -220,11 +220,11 @@ highlight! SignatureMarkerText  ctermfg=12 guifg=#4EA9D7 ctermbg=234 guibg=#1c1c
 " Plugin: vim-choosewin {{{
 " ---
 let g:choosewin_color_label = {
-	\ 'cterm': [  75, 233 ], 'gui': [ '#7f99cd', '#000000' ] }
+  \ 'cterm': [  75, 233 ], 'gui': [ '#7f99cd', '#000000' ] }
 let g:choosewin_color_label_current = {
-	\ 'cterm': [ 228, 233 ], 'gui': [ '#D7D17C', '#000000' ] }
+  \ 'cterm': [ 228, 233 ], 'gui': [ '#D7D17C', '#000000' ] }
 let g:choosewin_color_other = {
-	\ 'cterm': [ 235, 235 ], 'gui': [ '#232323', '#000000' ] }
+  \ 'cterm': [ 235, 235 ], 'gui': [ '#232323', '#000000' ] }
 " }}}
 
 " vim: set foldmethod=marker ts=2 sw=0 tw=80 noet :

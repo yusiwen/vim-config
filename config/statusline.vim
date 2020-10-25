@@ -28,51 +28,51 @@ let s:stl_nc .= '%{&ft} '                      " File type
 
 " Status-line blacklist
 let s:disable_statusline =
-	\ 'defx\|denite\|vista\|tagbar\|undotree\|diff\|peekaboo\|sidemenu\|qf'
+  \ 'defx\|denite\|vista\|tagbar\|undotree\|diff\|peekaboo\|sidemenu\|qf'
 
 function! s:active()
-	if &filetype ==# 'defx'
-		let &l:statusline = '%y %<%=%{badge#filename()}%= %l/%L'
-	elseif &filetype ==# 'magit'
-		let &l:statusline = '%y %{badge#gitstatus()}%<%=%{badge#filename()}%= %l/%L'
-	elseif &filetype ==# 'denite-filter'
-		setlocal statusline=%#Normal#
-	elseif &filetype !~# s:disable_statusline && ! &previewwindow
-		let &l:statusline = s:stl
-	endif
+  if &filetype ==# 'defx'
+    let &l:statusline = '%y %<%=%{badge#filename()}%= %l/%L'
+  elseif &filetype ==# 'magit'
+    let &l:statusline = '%y %{badge#gitstatus()}%<%=%{badge#filename()}%= %l/%L'
+  elseif &filetype ==# 'denite-filter'
+    setlocal statusline=%#Normal#
+  elseif &filetype !~# s:disable_statusline && ! &previewwindow
+    let &l:statusline = s:stl
+  endif
 endfunction
 
 function! s:inactive()
-	if &filetype ==# 'defx'
-		let &l:statusline = '%y %= %l/%L'
-	elseif &filetype ==# 'magit'
-		let &l:statusline = '%y %{badge#gitstatus()}%= %l/%L'
-	elseif &filetype !~# s:disable_statusline && ! &previewwindow
-		let &l:statusline = s:stl_nc
-	endif
+  if &filetype ==# 'defx'
+    let &l:statusline = '%y %= %l/%L'
+  elseif &filetype ==# 'magit'
+    let &l:statusline = '%y %{badge#gitstatus()}%= %l/%L'
+  elseif &filetype !~# s:disable_statusline && ! &previewwindow
+    let &l:statusline = s:stl_nc
+  endif
 endfunction
 
 augroup user_statusline
-	autocmd!
+  autocmd!
 
-	" Set active/inactive statusline templates
-	autocmd VimEnter,ColorScheme,FileType,WinEnter,BufWinEnter * call s:active()
-	autocmd WinLeave * call s:inactive()
+  " Set active/inactive statusline templates
+  autocmd VimEnter,ColorScheme,FileType,WinEnter,BufWinEnter * call s:active()
+  autocmd WinLeave * call s:inactive()
 
-	" Redraw on Vim events
-	autocmd FileChangedShellPost,BufFilePost,BufNewFile,BufWritePost * redrawstatus
+  " Redraw on Vim events
+  autocmd FileChangedShellPost,BufFilePost,BufNewFile,BufWritePost * redrawstatus
 
-	" Redraw on Plugins custom events
-	autocmd User ALELintPost,ALEFixPost redrawstatus
-	autocmd User NeomakeJobFinished redrawstatus
-	autocmd User GutentagsUpdating redrawstatus
-	autocmd User CocStatusChange,CocGitStatusChange redrawstatus
-	autocmd User CocDiagnosticChange redrawstatus
-	" autocmd User lsp_diagnostics_updated redrawstatus
+  " Redraw on Plugins custom events
+  autocmd User ALELintPost,ALEFixPost redrawstatus
+  autocmd User NeomakeJobFinished redrawstatus
+  autocmd User GutentagsUpdating redrawstatus
+  autocmd User CocStatusChange,CocGitStatusChange redrawstatus
+  autocmd User CocDiagnosticChange redrawstatus
+  " autocmd User lsp_diagnostics_updated redrawstatus
 
-	" if exists('##LspDiagnosticsChanged')
-	" 	autocmd LspDiagnosticsChanged * redrawstatus
-	" endif
+  " if exists('##LspDiagnosticsChanged')
+  " 	autocmd LspDiagnosticsChanged * redrawstatus
+  " endif
 augroup END
 
 " vim: set ts=2 sw=2 tw=80 noet :
