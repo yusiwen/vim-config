@@ -1,22 +1,28 @@
 " File Types
-" ===
+" ---
 
 augroup user_plugin_filetype " {{{
   autocmd!
 
-  " Reload vim config automatically
-  autocmd BufWritePost $VIM_PATH/{*.vim,*.yaml,vimrc} nested
-    \ source $MYVIMRC | redraw
+	" Reload vim configuration automatically on-save
+	autocmd BufWritePost $VIM_PATH/{*.vim,*.yaml,vimrc} nested
+		\ source $MYVIMRC | redraw
 
-  " Highlight current line only on focused window
-  autocmd WinEnter,BufEnter,InsertLeave *
-    \ if ! &cursorline && &filetype !~# '^\(denite\|clap_\)' && ! &pvw
-    \ | setlocal cursorline
-    \ | endif
-  autocmd WinLeave,BufLeave,InsertEnter *
-    \ if &cursorline && &filetype !~# '^\(denite\|clap_\)' && ! &pvw
-    \ | setlocal nocursorline
-    \ | endif
+	" Highlight current line only on focused window, unless:
+	" 1. Cursor-line is already set to wanted value
+	" 2. Denite or Clap buffers
+	" 3. Preview window
+	" 4. Completion popup menu is visible
+	autocmd WinEnter,BufEnter,InsertLeave *
+		\ if ! &cursorline && &filetype !~# '^\(denite\|clap_\|.*quickpick\)'
+		\      && ! &previewwindow && ! pumvisible()
+		\ | setlocal cursorline
+		\ | endif
+	autocmd WinLeave,BufLeave,InsertEnter *
+		\ if &cursorline && &filetype !~# '^\(denite\|clap_\|.*quickpick\)'
+		\      && ! &previewwindow && ! pumvisible()
+		\ | setlocal nocursorline
+		\ | endif
 
   " Automatically set read-only for files being edited elsewhere
   autocmd SwapExists * nested let v:swapchoice = 'o'
@@ -24,8 +30,8 @@ augroup user_plugin_filetype " {{{
   " Update diff comparison once leaving insert mode
   autocmd InsertLeave * if &l:diff | diffupdate | endif
 
-  " Equalize window dimensions when resizing vim window
-  autocmd VimResized * tabdo wincmd =
+	" Equalize window dimensions when resizing vim window
+	autocmd VimResized * wincmd =
 
   " Force write shada on leaving nvim
   autocmd VimLeave * if has('nvim') | wshada! | else | wviminfo! | endif
@@ -35,13 +41,14 @@ augroup user_plugin_filetype " {{{
 
   autocmd Syntax * if line('$') > 5000 | syntax sync minlines=200 | endif
 
-  " Neovim terminal settings
-  if has('nvim')
-    autocmd TermOpen * setlocal modifiable
-    autocmd TermClose * buffer #
-    " autocmd TextYankPost *
-    "	\ silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}
-  endif
+	" Neovim terminal settings
+	if has('nvim-0.5')
+		autocmd TermOpen * setlocal modifiable
+		try
+			autocmd TextYankPost *
+				\ silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}
+		endtry
+	endif
 
   " Update filetype on save if empty
   autocmd BufWritePost * nested
@@ -56,15 +63,30 @@ augroup user_plugin_filetype " {{{
     \   echo 'source ' . bufname('%') |
     \ endif
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  autocmd BufReadPost *
-    \ if &ft !~# 'commit' && ! &diff &&
-    \      line("'\"") >= 1 && line("'\"") <= line("$")
-    \|   execute 'normal! g`"zvzz'
-    \| endif
+	" When editing a file, always jump to the last known cursor position.
+	" Credits: https://github.com/farmergreg/vim-lastplace
+	autocmd BufReadPost *
+		\ if index(['gitcommit', 'gitrebase', 'svn', 'hgcommit'], &buftype) == -1 &&
+		\      index(['quickfix', 'nofile', 'help'], &buftype) == -1 &&
+		\      ! &diff && ! &previewwindow &&
+		\      line("'\"") > 0 && line("'\"") <= line("$")
+		\|   if line("w$") == line("$")
+		\|     execute "normal! g`\""
+		\|   elseif line("$") - line("'\"") > ((line("w$") - line("w0")) / 2) - 1
+		\|     execute "normal! g`\"zz"
+		\|   else
+		\|     execute "normal! \G'\"\<c-e>"
+		\|   endif
+		\|   if foldclosed('.') != -1
+		\|     execute 'normal! zvzz'
+		\|   endif
+		\| endif
 
-  autocmd FileType crontab setlocal nobackup nowritebackup
+	autocmd FileType apache setlocal path+=./;/
+
+	autocmd FileType html setlocal path+=./;/
+
+	autocmd FileType crontab setlocal nobackup nowritebackup
 
   autocmd FileType yaml.docker-compose setlocal expandtab
 
@@ -72,23 +94,18 @@ augroup user_plugin_filetype " {{{
 
   autocmd FileType gitcommit,qfreplace setlocal nofoldenable
 
-  " https://webpack.github.io/docs/webpack-dev-server.html#working-with-editors-ides-supporting-safe-write
-  autocmd FileType css,javascript,javascriptreact setlocal backupcopy=yes
-
-  autocmd FileType php
-    \ setlocal matchpairs-=<:> iskeyword+=\\ path+=/usr/local/share/pear
+	autocmd FileType php setlocal matchpairs-=<:> iskeyword+=\\
 
   autocmd FileType python
     \ setlocal expandtab smarttab nosmartindent
     \ | setlocal tabstop=4 softtabstop=4 shiftwidth=4 textwidth=80
 
-  autocmd FileType html setlocal path+=./;/
+	autocmd FileType markdown
+		\ setlocal expandtab spell conceallevel=0
+		\ | setlocal autoindent formatoptions=tcroqn2 comments=n:>
 
-  autocmd FileType markdown
-    \ setlocal expandtab spell conceallevel=0
-    \ | setlocal autoindent formatoptions=tcroqn2 comments=n:>
-
-  autocmd FileType apache setlocal path+=./;/
+	" https://webpack.github.io/docs/webpack-dev-server.html#working-with-editors-ides-supporting-safe-write
+	autocmd FileType css,javascript,javascriptreact setlocal backupcopy=yes
 
 augroup END " }}}
 
@@ -100,7 +117,9 @@ let g:PHP_removeCRwhenUnix = 0
 
 " }}}
 " Python {{{
-let g:python_highlight_all = 1
+let g:python_recommended_style = 0
+let g:pydoc_executable = 0
+" let g:python_highlight_all = 1
 " let g:python_highlight_builtins = 1
 " let g:python_highlight_exceptions = 1
 " let g:python_highlight_string_format = 1
@@ -116,6 +135,7 @@ let g:vim_indent_cont = &shiftwidth
 " }}}
 " Bash {{{
 let g:is_bash = 1
+let g:sh_no_error = 1
 
 " }}}
 " Java {{{

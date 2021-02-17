@@ -304,10 +304,10 @@ endfunction "}}}
 " -------------------------
 
 " Ultimatus Quitos
-autocmd user_events BufWinEnter,BufNew *
-  \ if &buftype == '' && ! mapcheck('q', 'n')
-  \ |   nnoremap <silent><buffer> q :<C-u>quit<CR>
-  \ | endif
+autocmd user_events BufWinEnter,BufNew,BufNewFile *
+	\ if &buftype == '' && ! mapcheck('q', 'n')
+	\ |   nnoremap <silent><buffer> q :<C-u>quit<CR>
+	\ | endif
 
 nnoremap <C-q> <C-w>
 nnoremap <C-x> <C-w>x

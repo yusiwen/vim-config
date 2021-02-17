@@ -10,6 +10,12 @@ if exists('&signcolumn')
   setlocal signcolumn=yes
 endif
 
+if ! exists(':Lfilter')
+	try
+		packadd cfilter
+	endtry
+endif
+
 if ! exists('b:qf_isLoc')
   " Are we in a location list or a quickfix list?
   let b:qf_isLoc = ! empty(getloclist(0))
@@ -22,6 +28,7 @@ silent! nunmap <buffer> p
 silent! nunmap <buffer> q
 silent! nunmap <buffer> s
 
+nnoremap <silent><buffer> <Esc>  :pclose!<CR>:quit<CR>
 nnoremap <silent><buffer> <CR>   :pclose!<CR><CR>:noautocmd wincmd b<CR>
 nnoremap <silent><buffer> q      :pclose!<CR>:quit<CR>
 nnoremap <silent><buffer> p      :call <SID>preview_file()<CR>
@@ -34,13 +41,6 @@ nnoremap <buffer> O      :<C-u>ListLists<CR>
 nnoremap <buffer> <C-s>  :<C-u>SaveList<Space>
 nnoremap <buffer> S      :<C-u>SaveList<Space>
 nnoremap <buffer> <C-o>  :<C-u>LoadList<Space>
-nnoremap <buffer> i      :<C-u>Keep<Space>
-
-if b:qf_isLoc == 1
-  nnoremap <silent><buffer> o :pclose!<CR><CR>:lclose<CR>
-else
-  nnoremap <silent><buffer> o :pclose!<CR><CR>:cclose<CR>
-endif
 
 nnoremap <silent><buffer> sg :pclose!<CR><C-w><CR>:noautocmd wincmd b<CR>
 nnoremap <silent><buffer> sv :pclose!<CR><C-w><CR><C-w>L:noautocmd wincmd b<CR>
@@ -51,6 +51,16 @@ nmap <buffer> <S-Tab>  <Plug>(qf_older)
 nmap <buffer> gj       <Plug>(qf_next_file)
 nmap <buffer> gk       <Plug>(qf_previous_file)
 
+nnoremap <silent><buffer><expr> o ":pclose!\<CR>\<CR>" .
+	\ (b:qf_isLoc == 1 ? ':lclose' : ':cclose') . "\<CR>"
+
+if exists(':Lfilter')
+	nnoremap <buffer><expr> i  (b:qf_isLoc == 1 ? ':Lfilter' : ':Cfilter')
+		\ . "\<Space>//\<Left>"
+else
+	nnoremap <buffer> i :<C-u>Keep<Space>
+endif
+
 " let s:ns = nvim_create_namespace('hlgrep')
 
 if exists('b:undo_ftplugin')
@@ -59,24 +69,25 @@ else
   let b:undo_ftplugin = ''
 endif
 let b:undo_ftplugin .= "execute 'nunmap <buffer> <CR>'"
-  \ . " | execute 'nunmap <buffer> q'"
-  \ . " | execute 'nunmap <buffer> p'"
-  \ . " | execute 'nunmap <buffer> K'"
-  \ . " | execute 'nunmap <buffer> <C-r>'"
-  \ . " | execute 'nunmap <buffer> R'"
-  \ . " | execute 'nunmap <buffer> O'"
-  \ . " | execute 'nunmap <buffer> <C-s>'"
-  \ . " | execute 'nunmap <buffer> S'"
-  \ . " | execute 'nunmap <buffer> <C-o>'"
-  \ . " | execute 'nunmap <buffer> i'"
-  \ . " | execute 'nunmap <buffer> o'"
-  \ . " | execute 'nunmap <buffer> sg'"
-  \ . " | execute 'nunmap <buffer> sv'"
-  \ . " | execute 'nunmap <buffer> st'"
-  \ . " | execute 'nunmap <buffer> <Tab>'"
-  \ . " | execute 'nunmap <buffer> <S-Tab>'"
-  \ . " | execute 'nunmap <buffer> gj'"
-  \ . " | execute 'nunmap <buffer> gk'"
+	\ . " | execute 'nunmap <buffer> <Esc>'"
+	\ . " | execute 'nunmap <buffer> q'"
+	\ . " | execute 'nunmap <buffer> p'"
+	\ . " | execute 'nunmap <buffer> K'"
+	\ . " | execute 'nunmap <buffer> <C-r>'"
+	\ . " | execute 'nunmap <buffer> R'"
+	\ . " | execute 'nunmap <buffer> O'"
+	\ . " | execute 'nunmap <buffer> <C-s>'"
+	\ . " | execute 'nunmap <buffer> S'"
+	\ . " | execute 'nunmap <buffer> <C-o>'"
+	\ . " | execute 'nunmap <buffer> i'"
+	\ . " | execute 'nunmap <buffer> o'"
+	\ . " | execute 'nunmap <buffer> sg'"
+	\ . " | execute 'nunmap <buffer> sv'"
+	\ . " | execute 'nunmap <buffer> st'"
+	\ . " | execute 'nunmap <buffer> <Tab>'"
+	\ . " | execute 'nunmap <buffer> <S-Tab>'"
+	\ . " | execute 'nunmap <buffer> gj'"
+	\ . " | execute 'nunmap <buffer> gk'"
 
 function! s:preview_file()
   " Find the file, line number and column of current entry

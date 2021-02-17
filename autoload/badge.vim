@@ -71,113 +71,113 @@ function! badge#gitstatus(...) abort
 endfunction
 
 function! badge#filename(...) abort
-  " Provides relative path with limited characters in each directory name, and
-  " limits number of total directories. Caches the result for current buffer.
-  " Parameters:
-  "   1: Buffer number, ignored if tab number supplied
-  "   2: Maximum characters displayed in base filename
-  "   3: Maximum characters displayed in each directory
-  "   4: Cache key
+	" Provides relative path with limited characters in each directory name, and
+	" limits number of total directories. Caches the result for current buffer.
+	" Parameters:
+	"   1: Buffer number, ignored if tab number supplied
+	"   2: Maximum characters displayed in base filename
+	"   3: Maximum characters displayed in each directory
+	"   4: Cache key
 
-  " Compute buffer id
-  let l:bufnr = '%'
-  if a:0 > 0
-    let l:bufnr = a:1
-  endif
+	" Compute buffer id
+	let l:bufnr = '%'
+	if a:0 > 0
+		let l:bufnr = a:1
+	endif
 
-  " Use buffer's cached filepath
-  let l:cache_var_name = a:0 > 3 ? a:4 : 'filename'
-  let l:cache_var_name = 'badge_cache_' . l:cache_var_name
-  let l:fn = getbufvar(l:bufnr, l:cache_var_name, '')
-  if len(l:fn) > 0
-    return l:fn
-  endif
+	" Use buffer's cached filepath
+	let l:cache_var_name = a:0 > 3 ? a:4 : 'filename'
+	let l:cache_var_name = 'badge_cache_' . l:cache_var_name
+	let l:fn = getbufvar(l:bufnr, l:cache_var_name, '')
+	if len(l:fn) > 0
+		return l:fn
+	endif
 
-  let l:bufname = bufname(l:bufnr)
-  let l:filetype = getbufvar(l:bufnr, '&filetype')
+	let l:bufname = bufname(l:bufnr)
+	let l:filetype = getbufvar(l:bufnr, '&filetype')
 
-  if l:filetype =~? g:badge_filetype_blacklist
-    " Empty if owned by certain plugins
-    let l:fn = ''
-  elseif l:filetype =~ '^denite'
-    let l:fn = '⌖  denite'
-  elseif l:filetype ==# 'qf'
-    let l:fn = '⌗ list'
-  elseif l:filetype ==# 'defx'
-    let l:defx = get(getbufvar(l:bufnr, 'defx', {}), 'context', {})
-    let l:fn = '⌯ ' . get(l:defx, 'buffer_name', 'defx')
-    unlet! l:defx
-  elseif l:filetype ==# 'magit'
-    let l:fn = magit#git#top_dir()
-  elseif l:filetype ==# 'vimfiler'
-    let l:fn = vimfiler#get_status_string()
-  elseif empty(l:bufname)
-    " Placeholder for empty buffer
-    let l:fn = g:badge_nofile
-  " elseif ! &buflisted
-  " 	let l:fn = ''
-  else
-    " Shorten dir names
-    let l:max = a:0 > 2 ? a:3 : g:badge_status_dir_max_chars
-    let short = substitute(l:bufname,
-      \ "[^/]\\{" . l:max . "}\\zs[^/]\*\\ze/", '', 'g')
+	if l:filetype =~? g:badge_filetype_blacklist
+		" Empty if owned by certain plugins
+		let l:fn = ''
+	elseif l:filetype ==# 'denite.*\|quickpick-filter'
+		let l:fn = '⌖ '
+	elseif l:filetype ==# 'qf'
+		let l:fn = '⌗ list'
+	elseif l:filetype ==# 'TelescopePrompt'
+		let l:fn = '⌖ '
+	elseif l:filetype ==# 'defx'
+		let l:fn = ' '
+	elseif l:filetype ==# 'magit'
+		let l:fn = magit#git#top_dir()
+	elseif l:filetype ==# 'vimfiler'
+		let l:fn = vimfiler#get_status_string()
+	elseif empty(l:bufname)
+		" Placeholder for empty buffer
+		let l:fn = g:badge_nofile
+	" elseif ! &buflisted
+	" 	let l:fn = ''
+	else
+		" Shorten dir names
+		let l:max = a:0 > 2 ? a:3 : g:badge_status_dir_max_chars
+		let short = substitute(l:bufname,
+			\ "[^/]\\{" . l:max . "}\\zs[^/]\*\\ze/", '', 'g')
 
-    " Decrease dir count
-    let l:max = a:0 > 1 ? a:2 : g:badge_status_filename_max_dirs
-    let parts = split(short, '/')
-    if len(parts) > l:max
-      let parts = parts[-l:max-1 : ]
-    endif
+		" Decrease dir count
+		let l:max = a:0 > 1 ? a:2 : g:badge_status_filename_max_dirs
+		let parts = split(short, '/')
+		if len(parts) > l:max
+			let parts = parts[-l:max-1 : ]
+		endif
 
-    " Set icon
-    let l:icon = ''
-    if exists('*nerdfont#find')
-      let l:icon = nerdfont#find(l:bufname)
-    elseif exists('*defx_icons#get')
-      let l:icon = get(defx_icons#get().icons.extensions, expand('%:e'), {})
-      let l:icon = get(l:icon, 'icon', '')
-    endif
-    if ! empty(l:icon)
-      let l:fn .= l:icon . '  '
-    endif
+		" Set icon
+		let l:icon = ''
+		if exists('*nerdfont#find')
+			let l:icon = nerdfont#find(l:bufname)
+		elseif exists('*defx_icons#get')
+			let l:icon = get(defx_icons#get().icons.extensions, expand('%:e'), {})
+			let l:icon = get(l:icon, 'icon', '')
+		endif
+		if ! empty(l:icon)
+			let l:fn .= l:icon . '  '
+		endif
 
-    let l:fn .= join(parts, '/')
-  endif
+		let l:fn .= join(parts, '/')
+	endif
 
-  " Append fugitive blob type
-  let l:fugitive = getbufvar(l:bufnr, 'fugitive_type')
-  if l:fugitive ==# 'blob'
-    let l:fn .= ' (blob)'
-  endif
+	" Append fugitive blob type
+	let l:fugitive = getbufvar(l:bufnr, 'fugitive_type')
+	if l:fugitive ==# 'blob'
+		let l:fn .= ' (blob)'
+	endif
 
-  " Cache and return the final result
-  call setbufvar(l:bufnr, l:cache_var_name, l:fn)
-  if index(s:caches, l:cache_var_name) == -1
-    call add(s:caches, l:cache_var_name)
-  endif
-  return l:fn
+	" Cache and return the final result
+	call setbufvar(l:bufnr, l:cache_var_name, l:fn)
+	if index(s:caches, l:cache_var_name) == -1
+		call add(s:caches, l:cache_var_name)
+	endif
+	return l:fn
 endfunction
 
 function! badge#root() abort
-  " Find the root directory by searching for the version-control dir
+	" Find the root directory by searching for the version-control dir
 
-  let dir = getbufvar('%', 'project_dir')
-  let curr_dir = getcwd()
-  if empty(dir) || getbufvar('%', 'project_dir_last_cwd') != curr_dir
-    let patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
-    for pattern in patterns
-      let is_dir = stridx(pattern, '/') != -1
-      let match = is_dir ? finddir(pattern, curr_dir.';')
-        \ : findfile(pattern, curr_dir.';')
-      if ! empty(match)
-        let dir = fnamemodify(match, is_dir ? ':p:h:h' : ':p:h')
-        call setbufvar('%', 'project_dir', dir)
-        call setbufvar('%', 'project_dir_last_cwd', curr_dir)
-        break
-      endif
-    endfor
-  endif
-  return dir
+	let dir = getbufvar('%', 'project_dir')
+	let curr_dir = getcwd()
+	if empty(dir) || getbufvar('%', 'project_dir_last_cwd') != curr_dir
+		let patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
+		for pattern in patterns
+			let is_dir = stridx(pattern, '/') != -1
+			let match = is_dir ? finddir(pattern, curr_dir . ';')
+				\ : findfile(pattern, curr_dir . ';')
+			if ! empty(match)
+				let dir = fnamemodify(match, is_dir ? ':p:h:h' : ':p:h')
+				call setbufvar('%', 'project_dir', dir)
+				call setbufvar('%', 'project_dir_last_cwd', curr_dir)
+				break
+			endif
+		endfor
+	endif
+	return dir
 endfunction
 
 function! badge#branch() abort
@@ -196,47 +196,48 @@ function! badge#branch() abort
 endfunction
 
 function! badge#syntax() abort
-  " Returns syntax warnings from several plugins
-  " Supports vim-lsp, ALE, Neomake, and Syntastic
-  if &filetype =~? g:badge_filetype_blacklist
-    return ''
-  endif
+	" Returns syntax warnings from several plugins
+	" Supports vim-lsp, ALE, Neomake, and Syntastic
+	if &filetype =~? g:badge_filetype_blacklist
+		return ''
+	endif
 
-  let l:msg = ''
-  let l:errors = 0
-  let l:warnings = 0
-  let l:hints = 0
-  let l:information = 0
-  if exists('*lsp#activate') && get(g:, 'lsp_diagnostics_enabled', 1)
-    let l:counts = lsp#ui#vim#diagnostics#get_buffer_diagnostics_counts()
-    let l:errors = get(l:counts, 'error', '')
-    let l:warnings = get(l:counts, 'warning', '')
-    let l:hints = get(l:counts, 'hint', '')
-    let l:information = get(l:counts, 'information', '')
-  elseif exists('*neomake#Make')
-    let l:counts = neomake#statusline#get_counts(bufnr('%'))
-    let l:errors = get(l:counts, 'E', '')
-    let l:warnings = get(l:counts, 'W', '')
-  elseif exists('g:loaded_ale')
-    let l:counts = ale#statusline#Count(bufnr('%'))
-    let l:errors = l:counts.error + l:counts.style_error
-    let l:warnings = l:counts.total - l:errors
-  elseif exists('*SyntasticStatuslineFlag')
-    let l:msg = SyntasticStatuslineFlag()
-  endif
-  if l:errors > 0
-    let l:msg .= printf(' %d ', l:errors)
-  endif
-  if l:warnings > 0
-    let l:msg .= printf(' %d ', l:warnings)
-  endif
-  if l:hints > 0
-    let l:msg .= printf(' %d ', l:hints)
-  endif
-  if l:information > 0
-    let l:msg .= printf(' %d ', l:information)
-  endif
-  return substitute(l:msg, '\s*$', '', '')
+	let l:msg = ''
+	let l:errors = 0
+	let l:warnings = 0
+	let l:hints = 0
+	let l:information = 0
+	if exists('*lsp#get_buffer_diagnostics_counts')
+			\ && get(g:, 'lsp_diagnostics_enabled', 1)
+		let l:counts = lsp#get_buffer_diagnostics_counts()
+		let l:errors = get(l:counts, 'error', '')
+		let l:warnings = get(l:counts, 'warning', '')
+		let l:hints = get(l:counts, 'hint', '')
+		let l:information = get(l:counts, 'information', '')
+	elseif exists('*neomake#Make')
+		let l:counts = neomake#statusline#get_counts(bufnr('%'))
+		let l:errors = get(l:counts, 'E', '')
+		let l:warnings = get(l:counts, 'W', '')
+	elseif exists('g:loaded_ale')
+		let l:counts = ale#statusline#Count(bufnr('%'))
+		let l:errors = l:counts.error + l:counts.style_error
+		let l:warnings = l:counts.total - l:errors
+	elseif exists('*SyntasticStatuslineFlag')
+		let l:msg = SyntasticStatuslineFlag()
+	endif
+	if l:errors > 0
+		let l:msg .= printf(' %d ', l:errors)
+	endif
+	if l:warnings > 0
+		let l:msg .= printf(' %d ', l:warnings)
+	endif
+	if l:hints > 0
+		let l:msg .= printf(' %d ', l:hints)
+	endif
+	if l:information > 0
+		let l:msg .= printf(' %d ', l:information)
+	endif
+	return substitute(l:msg, '\s*$', '', '')
 endfunction
 
 function! badge#trails(...) abort
@@ -299,26 +300,43 @@ function! badge#session(...) abort
 endfunction
 
 function! badge#indexing() abort
-  let l:out = ''
+	let l:out = ''
 
-  if exists('*gutentags#statusline')
-    let l:tags = gutentags#statusline('[', ']')
-    if ! empty(l:tags)
-      if exists('*reltime')
-        let s:wait = split(reltimestr(reltime()), '\.')[1] / 100000
-      else
-        let s:wait = get(s:, 'wait', 9) == 9 ? 0 : s:wait + 1
-      endif
-      let l:out .= get(g:badge_loading_charset, s:wait, '') . ' ' . l:tags
-    endif
-  endif
-  if exists('*coc#status')
-    let l:out .= coc#status()
-  endif
-  if exists('g:SessionLoad') && g:SessionLoad == 1
-    let l:out .= '[s]'
-  endif
-  return l:out
+	if exists('*lsp#get_progress')
+		let s:lsp_progress = lsp#get_progress()
+		if len(s:lsp_progress) > 0 && has_key(s:lsp_progress[0], 'message')
+			" Show only last progress message
+			let s:lsp_progress = s:lsp_progress[0]
+			let l:percent = get(s:lsp_progress, 'percentage')
+			if s:lsp_progress['message'] != '' && l:percent != 100
+				let l:out .= s:lsp_progress['server'] . ':'
+					\ . s:lsp_progress['title'] . ' '
+					\ . s:lsp_progress['message']
+					\ . l:percent
+				if l:percent >= 0
+					let l:out .= ' ' . string(l:percent) . '%'
+				endif
+			endif
+		endif
+	endif
+	if exists('*gutentags#statusline')
+		let l:tags = gutentags#statusline('[', ']')
+		if ! empty(l:tags)
+			if exists('*reltime')
+				let s:wait = split(reltimestr(reltime()), '\.')[1] / 100000
+			else
+				let s:wait = get(s:, 'wait', 9) == 9 ? 0 : s:wait + 1
+			endif
+			let l:out .= get(g:badge_loading_charset, s:wait, '') . ' ' . l:tags
+		endif
+	endif
+	if exists('*coc#status')
+		let l:out .= coc#status()
+	endif
+	if exists('g:SessionLoad') && g:SessionLoad == 1
+		let l:out .= '[s]'
+	endif
+	return l:out
 endfunction
 
 function! s:numtr(number, charset) abort

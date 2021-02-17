@@ -23,6 +23,15 @@ if has('termguicolors')
   endif
 endif
 
+if ! has('nvim')
+	set t_Co=256
+	" Set Vim-specific sequences for RGB colors
+	" Fixes 'termguicolors' usage in vim+tmux
+	" :h xterm-true-color
+	let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+	let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
+
 " Disable vim distribution plugins
 
 " let g:loaded_gzip = 1
@@ -41,6 +50,7 @@ let g:loaded_matchparen = 1
 let g:loaded_2html_plugin = 1
 let g:loaded_logiPat = 1
 let g:loaded_rrhelper = 1
+let g:no_gitrebase_maps = 1
 
 let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
@@ -75,120 +85,120 @@ let s:config_paths = get(g:, 'etc_config_paths', [
 call filter(s:config_paths, 'filereadable(v:val)')
 
 function! s:main()
-  if has('vim_starting')
-    " When using VIMINIT trick for exotic MYVIMRC locations, add path now.
-    if &runtimepath !~# $VIM_PATH
-      set runtimepath^=$VIM_PATH
-      set runtimepath+=$VIM_PATH/after
-    endif
+	if has('vim_starting')
+		" When using VIMINIT trick for exotic MYVIMRC locations, add path now.
+		if &runtimepath !~# $VIM_PATH
+			set runtimepath^=$VIM_PATH
+			set runtimepath+=$VIM_PATH/after
+		endif
 
-    " Ensure data directories
-    for s:path in [
-        \ $DATA_PATH,
-        \ $DATA_PATH . '/undo',
-        \ $DATA_PATH . '/backup',
-        \ $DATA_PATH . '/session',
-        \ $DATA_PATH . '/swap',
-        \ $VIM_PATH . '/spell' ]
-      if ! isdirectory(s:path)
-        call mkdir(s:path, 'p')
-      endif
-    endfor
+		" Ensure data directories
+		for s:path in [
+				\ $DATA_PATH,
+				\ $DATA_PATH . '/undo',
+				\ $DATA_PATH . '/backup',
+				\ $DATA_PATH . '/session',
+				\ $DATA_PATH . '/swap',
+				\ $VIM_PATH . '/spell' ]
+			if ! isdirectory(s:path)
+				call mkdir(s:path, 'p', 0770)
+			endif
+		endfor
 
-    " Python interpreter settings
-    if has('nvim')
-      " Try the virtualenv created by venv.sh
-      let l:virtualenv = $DATA_PATH . '/venv/bin/python'
-      if empty(l:virtualenv) || ! filereadable(l:virtualenv)
-        " Fallback to old virtualenv location
-        let l:virtualenv = $DATA_PATH . '/venv/neovim3/bin/python'
-      endif
-      if filereadable(l:virtualenv)
-        let g:python3_host_prog = l:virtualenv
-      endif
+		" Python interpreter settings
+		if has('nvim')
+			" Try the virtualenv created by venv.sh
+			let l:virtualenv = $DATA_PATH . '/venv/bin/python'
+			if empty(l:virtualenv) || ! filereadable(l:virtualenv)
+				" Fallback to old virtualenv location
+				let l:virtualenv = $DATA_PATH . '/venv/neovim3/bin/python'
+			endif
+			if filereadable(l:virtualenv)
+				let g:python3_host_prog = l:virtualenv
+			endif
 
-    elseif has('pythonx')
-      if has('python3')
-        set pyxversion=3
-      elseif has('python')
-        set pyxversion=2
-      endif
-    endif
-  endif
+		elseif has('pythonx')
+			if has('python3')
+				set pyxversion=3
+			elseif has('python')
+				set pyxversion=2
+			endif
+		endif
+	endif
 
-  " Initializes chosen package manager
-  call s:use_{s:package_manager}()
+	" Initializes chosen package manager
+	call s:use_{s:package_manager}()
 endfunction
 
+" Use dein as a plugin manager
 function! s:use_dein()
-  let l:cache_path = $DATA_PATH . '/dein'
+	let l:cache_path = $DATA_PATH . '/dein'
 
-  if has('vim_starting')
-    " Use dein as a plugin manager
-    let g:dein#auto_recache = 1
-    let g:dein#install_max_processes = 12
+	if has('vim_starting')
+		" Use dein as a plugin manager
+		let g:dein#auto_recache = 1
+		let g:dein#install_max_processes = 12
 
-    " Add dein to vim's runtimepath
-    if &runtimepath !~# '/dein.vim'
-      let s:dein_dir = l:cache_path . '/repos/github.com/Shougo/dein.vim'
-      " Clone dein if first-time setup
-      if ! isdirectory(s:dein_dir)
-        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_dir
-        if v:shell_error
-          call s:error('dein installation has failed! is git installed?')
-          finish
-        endif
-      endif
+		" Add dein to vim's runtimepath
+		if &runtimepath !~# '/dein.vim'
+			let s:dein_dir = l:cache_path . '/repos/github.com/Shougo/dein.vim'
+			" Clone dein if first-time setup
+			if ! isdirectory(s:dein_dir)
+				execute '!git clone https://github.com/Shougo/dein.vim' s:dein_dir
+				if v:shell_error
+					call s:error('dein installation has failed! is git installed?')
+					finish
+				endif
+			endif
 
-      execute 'set runtimepath+='.substitute(
-        \ fnamemodify(s:dein_dir, ':p') , '/$', '', '')
-    endif
-  endif
+			execute 'set runtimepath+='.substitute(
+				\ fnamemodify(s:dein_dir, ':p') , '/$', '', '')
+		endif
+	endif
 
-  " Initialize dein.vim (package manager)
-  if dein#load_state(l:cache_path)
-    let l:rc = s:parse_config_files()
-    if empty(l:rc)
-      call s:error('Empty plugin list')
-      return
-    endif
+	" Initialize dein.vim (package manager)
+	if dein#load_state(l:cache_path)
+		let l:rc = s:parse_config_files()
+		if empty(l:rc)
+			call s:error('Empty plugin list')
+			return
+		endif
 
-    " Start propagating file paths and plugin presets
-    call dein#begin(l:cache_path, extend([expand('<sfile>')], s:config_paths))
-    for plugin in l:rc
-      call dein#add(plugin['repo'], extend(plugin, {}, 'keep'))
-    endfor
+		" Start propagating file paths and plugin presets
+		call dein#begin(l:cache_path, extend([expand('<sfile>')], s:config_paths))
 
-    " Add any local ./dev plugins
-    if isdirectory($VIM_PATH . '/dev')
-      call dein#local($VIM_PATH . '/dev', { 'frozen': 1, 'merged': 0 })
-    endif
-    call dein#end()
+		for plugin in l:rc
+			" If vim already started, don't re-add existing ones
+			if has('vim_starting')
+					\ || ! has_key(g:dein#_plugins, fnamemodify(plugin['repo'], ':t'))
+				call dein#add(plugin['repo'], extend(plugin, {}, 'keep'))
+			endif
+		endfor
 
-    " Save cached state for faster startups
-    if ! g:dein#_is_sudo
-      call dein#save_state()
-    endif
+		" Add any local ./dev plugins
+		if isdirectory($VIM_PATH . '/dev')
+			call dein#local($VIM_PATH . '/dev', { 'frozen': 1, 'merged': 0 })
+		endif
+		call dein#end()
 
-    " Update or install plugins if a change detected
-    if dein#check_install()
-      if ! has('nvim')
-        set nomore
-      endif
-      call dein#install()
-    endif
-  endif
+		" Save cached state for faster startups
+		if ! g:dein#_is_sudo
+			call dein#save_state()
+		endif
 
-  filetype plugin indent on
+		" Update or install plugins if a change detected
+		if dein#check_install()
+			if ! has('nvim')
+				set nomore
+			endif
+			call dein#install()
+		endif
+	endif
 
-  " Only enable syntax when vim is starting
-  if has('vim_starting')
-    syntax enable
-  endif
-
-  " Trigger source event hooks
-  call dein#call_hook('source')
-  call dein#call_hook('post_source')
+	if has('vim_starting') && ! has('nvim')
+		filetype plugin indent on
+		syntax enable
+	endif
 endfunction
 
 function! s:use_plug() abort
@@ -307,31 +317,31 @@ endfunction
 let s:convert_tool = ''
 
 function! s:load_yaml(filename)
-  if empty(s:convert_tool)
-    let s:convert_tool = s:find_yaml2json_method()
-  endif
+	if empty(s:convert_tool)
+		let s:convert_tool = s:find_yaml2json_method()
+	endif
 
-  if s:convert_tool ==# 'ruby'
-    let l:cmd = "ruby -e 'require \"json\"; require \"yaml\"; ".
-      \ "print JSON.generate YAML.load \$stdin.read'"
-  elseif s:convert_tool ==# 'python'
-    let l:cmd = "python -c 'import sys,yaml,json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))'"
-  elseif s:convert_tool ==# 'yq'
-    let l:cmd = 'yq r -j -'
-  else
-    let l:cmd = s:convert_tool
-  endif
+	if s:convert_tool ==# 'ruby'
+		let l:cmd = "ruby -e 'require \"json\"; require \"yaml\"; ".
+			\ "print JSON.generate YAML.load \$stdin.read'"
+	elseif s:convert_tool ==# 'python'
+		let l:cmd = "python -c 'import sys,yaml,json; y=yaml.safe_load(sys.stdin.read()); print(json.dumps(y))'"
+	elseif s:convert_tool ==# 'yq'
+		let l:cmd = 'yq e -j -I 0'
+	else
+		let l:cmd = s:convert_tool
+	endif
 
-  try
-    let l:raw = readfile(a:filename)
-    return json_decode(system(l:cmd, l:raw))
-  catch /.*/
-    call s:error([
-      \ string(v:exception),
-      \ 'Error loading ' . a:filename,
-      \ 'Caught: ' . string(v:exception),
-      \ ])
-  endtry
+	try
+		let l:raw = readfile(a:filename)
+		return json_decode(system(l:cmd, l:raw))
+	catch /.*/
+		call s:error([
+			\ string(v:exception),
+			\ 'Error loading ' . a:filename,
+			\ 'Caught: ' . string(v:exception),
+			\ ])
+	endtry
 endfunction
 
 function! s:find_yaml2json_method()

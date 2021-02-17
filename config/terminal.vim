@@ -1,9 +1,6 @@
 " Vim Only Terminal Tweaks: Colors, cursor shape, and tmux
 " ---
 
-" Enable 256 color terminal
-set t_Co=256
-
 " Paste
 " Credits: https://github.com/Shougo/shougo-s-github
 " ---
@@ -30,6 +27,11 @@ if has('mouse')
     set ttymouse=xterm2
   endif
 endif
+
+" Disable modifyOtherKeys
+" See: https://github.com/vim/vim/issues/5200
+let &t_TI = ""
+let &t_TE = ""
 
 " Cursor-shape
 " Credits: https://github.com/wincent/terminus
@@ -93,45 +95,39 @@ let &t_EI = s:end_insert
 " Tmux specific settings
 " ---
 if s:tmux
-  set ttyfast
+	set ttyfast
 
-  " Set Vim-specific sequences for RGB colors
-  " Fixes 'termguicolors' usage in tmux
-  " :h xterm-true-color
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+	" Assigns some xterm(1)-style keys to escape sequences passed by tmux
+	" when 'xterm-keys' is set to 'on'.  Inspired by an example given by
+	" Chris Johnsen at https://stackoverflow.com/a/15471820
+	" Credits: Mark Oteiza
+	" Documentation: help:xterm-modifier-keys man:tmux(1)
+	execute "set <xUp>=\e[1;*A"
+	execute "set <xDown>=\e[1;*B"
+	execute "set <xRight>=\e[1;*C"
+	execute "set <xLeft>=\e[1;*D"
 
-  " Assigns some xterm(1)-style keys to escape sequences passed by tmux
-  " when 'xterm-keys' is set to 'on'.  Inspired by an example given by
-  " Chris Johnsen at https://stackoverflow.com/a/15471820
-  " Credits: Mark Oteiza
-  " Documentation: help:xterm-modifier-keys man:tmux(1)
-  execute "set <xUp>=\e[1;*A"
-  execute "set <xDown>=\e[1;*B"
-  execute "set <xRight>=\e[1;*C"
-  execute "set <xLeft>=\e[1;*D"
+	execute "set <xHome>=\e[1;*H"
+	execute "set <xEnd>=\e[1;*F"
 
-  execute "set <xHome>=\e[1;*H"
-  execute "set <xEnd>=\e[1;*F"
+	execute "set <Insert>=\e[2;*~"
+	execute "set <Delete>=\e[3;*~"
+	execute "set <PageUp>=\e[5;*~"
+	execute "set <PageDown>=\e[6;*~"
 
-  execute "set <Insert>=\e[2;*~"
-  execute "set <Delete>=\e[3;*~"
-  execute "set <PageUp>=\e[5;*~"
-  execute "set <PageDown>=\e[6;*~"
+	execute "set <xF1>=\e[1;*P"
+	execute "set <xF2>=\e[1;*Q"
+	execute "set <xF3>=\e[1;*R"
+	execute "set <xF4>=\e[1;*S"
 
-  execute "set <xF1>=\e[1;*P"
-  execute "set <xF2>=\e[1;*Q"
-  execute "set <xF3>=\e[1;*R"
-  execute "set <xF4>=\e[1;*S"
-
-  execute "set <F5>=\e[15;*~"
-  execute "set <F6>=\e[17;*~"
-  execute "set <F7>=\e[18;*~"
-  execute "set <F8>=\e[19;*~"
-  execute "set <F9>=\e[20;*~"
-  execute "set <F10>=\e[21;*~"
-  execute "set <F11>=\e[23;*~"
-  execute "set <F12>=\e[24;*~"
+	execute "set <F5>=\e[15;*~"
+	execute "set <F6>=\e[17;*~"
+	execute "set <F7>=\e[18;*~"
+	execute "set <F8>=\e[19;*~"
+	execute "set <F9>=\e[20;*~"
+	execute "set <F10>=\e[21;*~"
+	execute "set <F11>=\e[23;*~"
+	execute "set <F12>=\e[24;*~"
 endif
 
 " vim: set ts=2 sw=2 tw=80 noet :
